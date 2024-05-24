@@ -10,6 +10,9 @@ from contextlib import asynccontextmanager
 from tqdm.notebook import tqdm
 import os
 
+cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
+os.makedirs(cache_dir, exist_ok=True)
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device detected: {device}")
 mtcnn = MTCNN(image_size=160, margin=10, device=device)
@@ -50,7 +53,7 @@ async def on_start():
     for f in files:
         s  = f.split("/")[-1].split("_")[0]
         labels.append(s)
-        print(f"labels len: {len(labels)}")
+    print(f"labels len: {len(labels)}")
         
     if os.path.exists(id2name_file_name):
         id2name = np.load(id2name_file_name, allow_pickle=True).item()

@@ -1,6 +1,8 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.10-slim
 
+RUN useradd -m -u 1000 app
+
 
 # Set the working directory
 WORKDIR /code
@@ -13,6 +15,7 @@ COPY ./requirements.txt /code/requirements.txt
 # Install the dependencies
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
+USER app
 
 
 # Copy the rest of the application code
