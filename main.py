@@ -29,31 +29,25 @@ id2name = dict()
 
 async def on_start():
     global index, embeddings, id2name
-    files = glob.glob("dataset/Original Images/Original Images/*/*")
-    print(f"files: {files[0]}")
-    print(f"files len: {len(files)}")
     if os.path.exists(embed_file_name):
         embeddings = np.load(embed_file_name)
         print(f"embedding file loaded...")
     else:
-        for file in tqdm(files):
-            img = Image.open(file)
-            img = mtcnn(img).to(device)
-            embedding = resnet(img.unsqueeze(0)).cpu().detach().numpy()
-            if embeddings is None:
-                embeddings = embedding
-            else:
-                embeddings = np.concatenate((embeddings, embedding), axis=0)  
+        print(f"{embed_file_name} not found")
+        # for file in tqdm(files):
+        #     img = Image.open(file)
+        #     img = mtcnn(img).to(device)
+        #     embedding = resnet(img.unsqueeze(0)).cpu().detach().numpy()
+        #     if embeddings is None:
+        #         embeddings = embedding
+        #     else:
+        #         embeddings = np.concatenate((embeddings, embedding), axis=0)  
         print(f"new embeddings completed... ")
-        np.save(embed_file_name, embeddings)
-        print("embeding saving completed")
+        # np.save(embed_file_name, embeddings)
+        # print("embeding saving completed")
     print(f"embedding shape: {embeddings.shape}")
       # loading the user with id's
-    labels = []
-    for f in files:
-        s  = f.split("/")[-1].split("_")[0]
-        labels.append(s)
-    print(f"labels len: {len(labels)}")
+    labels = np.load("nameLabels.npy")
         
     if os.path.exists(id2name_file_name):
         id2name = np.load(id2name_file_name, allow_pickle=True).item()
@@ -66,7 +60,7 @@ async def on_start():
     print(f"id2name: {id2name}")
     
     label_with_ids = []
-    for i in range(0, len(files)):
+    for i in range(0, len(labels)):
         label_with_ids.append(name2id[labels[i]])
     print(f"label_with_ids len: {len(label_with_ids)}")
 
