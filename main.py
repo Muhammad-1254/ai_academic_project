@@ -106,7 +106,7 @@ async def recognize(file: UploadFile = File(...)):
     except Exception as e:
         raise {"error" : f"error occur {e}"}
     print('embed for recognize completed')
-    D, I = index.search(embedding, 50)  # Search for the closest match
+    D, I = index.search(embedding, 15)  # Search for the closest match
     
     found_name = id2name[I[0][0]]
     print(f"found name: {found_name}")
