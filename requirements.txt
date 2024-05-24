@@ -1,0 +1,4 @@
+facenet-pytorch==2.6.0
+faiss-gpu==1.7.2
+pillow==10.2.0
+fastapi
