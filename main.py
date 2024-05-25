@@ -107,7 +107,16 @@ async def recognize(file: UploadFile = File(...)):
         raise {"error" : f"error occur {e}"}
     print('embed for recognize completed')
     D, I = index.search(embedding, 15)  # Search for the closest match
-    
+    temp_list = []
+    for i in range(0, len(D[0])):
+        if D[0][i] >= 0.3:
+            temp_list.append(D[0][i])
+        else:
+            I[0].pop(i)
+    D[0] = list(temp_list)
+    if len(D[0]) <1:
+        return HTTPException(status_code=400, detail="Person not Found in DB")
+
     found_name = id2name[I[0][0]]
     print(f"found name: {found_name}")
     print(f"D: {D}")
