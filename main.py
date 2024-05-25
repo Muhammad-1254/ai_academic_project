@@ -111,7 +111,7 @@ async def recognize(file: UploadFile = File(...)):
     new_I = []
     
     for i in range(0, len(D[0])):
-        if D[0][i] >= 0.3:
+        if D[0][i] >= 0.6:
             new_D.append(D[0][i])
             new_I.append(I[0][i])
     
