@@ -107,28 +107,26 @@ async def recognize(file: UploadFile = File(...)):
         raise {"error" : f"error occur {e}"}
     print('embed for recognize completed')
     D, I = index.search(embedding, 15)  # Search for the closest match
-    temp_D = []
-    temp_I = []
+    new_D = []
+    new_I = []
     
     for i in range(0, len(D[0])):
         if D[0][i] >= 0.3:
-            temp_D.append(D[0][i])
-            temp_I.append(I[0][i])
-    D[0] = list(temp_D)
-    I[0] = list(temp_I)
+            new_D.append(D[0][i])
+            new_I.append(I[0][i])
     
-    if len(D[0]) <1:
+    if len(new_D) <1:
         return HTTPException(status_code=400, detail="Person not Found in DB")
 
-    found_name = id2name[I[0][0]]
+    found_name = id2name[new_I[0]]
     print(f"found name: {found_name}")
     print(f"D: {D}")
     print(f"I: {I}")
-    print(f"find in id2name file: {id2name[I[0][0]]}")
-    if len(list(set(I[0])))>1:
-        print(f"found multiple: {set(I[0])}")
+    print(f"find in id2name file: {id2name[new_I[0]]}")
+    if len(list(set(new_I)))>1:
+        print(f"found multiple: {set(new_I)}")
         t = {}       
-        for i in I[0]:
+        for i in new_I:
             if i in t:
                 t[i] =t[i] +1
             else:
