@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import JSONResponse
 from facenet_pytorch import MTCNN, InceptionResnetV1
 import torch
 from PIL import Image
@@ -9,7 +10,7 @@ import glob
 from contextlib import asynccontextmanager
 from tqdm.notebook import tqdm
 import os
-
+from utils import read_csv, add_attendance, clear_csv
 cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
 os.makedirs(cache_dir, exist_ok=True)
 
@@ -26,6 +27,9 @@ id2name_file_name = 'id2name.npy'
 embeddings = None
 index = None
 id2name = dict()
+
+
+
 
 async def on_start():
     global index, embeddings, id2name
@@ -93,7 +97,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/recognize/")
-async def recognize(file: UploadFile = File(...)):
+async def recognize(seat_no:str, student_name:str ,file: UploadFile = File(...)):
     try:
         image = Image.open(io.BytesIO(await file.read()))
     
@@ -140,11 +144,31 @@ async def recognize(file: UploadFile = File(...)):
         if total != 0:
             found_percentage = t[max(t, key=t.get)] /total
             return {"multipleFound": f"multiple name found, but most like person is {most_like_person} with % of {found_percentage*100}","personFound": [id2name[_] for _ in t]}
-    return {"name": found_name, }
+    
+    add_attendance(seat_no=seat_no,student_name=student_name)
+    
+    return {"found name in db": found_name, }
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Face Recognition API"}
+
+
+
+@app.get("/attendance")
+async def get_attendance():
+    data = read_csv()
+    return JSONResponse(content=data)
+
+@app.get("/clear_attendence")
+async def clear_attendence():
+    clear_csv()
+    return {"status": "attendance cleared"}
+
+
+@app.get("/api/v1/health")
+async def health():
+    return {"status": "health is good"}
+
+
+
 
 
 
