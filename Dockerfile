@@ -15,6 +15,9 @@ COPY ./requirements.txt /code/requirements.txt
 # Install the dependencies
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
+RUN touch /code/attendance.csv && chown app:app /code/attendance.csv
+
+
 USER app
 
 
