@@ -10,7 +10,12 @@ import glob
 from contextlib import asynccontextmanager
 from tqdm.notebook import tqdm
 import os
-from utils import read_csv, add_attendance, clear_csv
+# from utils import read_csv, add_attendance, clear_csv
+
+
+# file_path = "attendance.csv"
+# os.chmod(file_path, 0o666)
+
 cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
 os.makedirs(cache_dir, exist_ok=True)
 
@@ -145,22 +150,22 @@ async def recognize(seat_no:str, student_name:str ,file: UploadFile = File(...))
             found_percentage = t[max(t, key=t.get)] /total
             return {"multipleFound": f"multiple name found, but most like person is {most_like_person} with % of {found_percentage*100}","personFound": [id2name[_] for _ in t]}
     
-    add_attendance(seat_no=seat_no,student_name=student_name)
+    # add_attendance(seat_no=seat_no,student_name=student_name)
     
     return {"found name in db": found_name, }
 
 
 
 
-@app.get("/attendance")
-async def get_attendance():
-    data = read_csv()
-    return JSONResponse(content=data)
+# @app.get("/attendance")
+# async def get_attendance():
+#     data = read_csv()
+#     return JSONResponse(content=data)
 
-@app.get("/clear_attendence")
-async def clear_attendence():
-    clear_csv()
-    return {"status": "attendance cleared"}
+# @app.get("/clear_attendence")
+# async def clear_attendence():
+#     clear_csv()
+#     return {"status": "attendance cleared"}
 
 
 @app.get("/api/v1/health")
