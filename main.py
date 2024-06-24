@@ -102,7 +102,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/recognize/")
-async def recognize(seat_no:str, student_name:str ,file: UploadFile = File(...)):
+async def recognize(file: UploadFile = File(...)):
     try:
         image = Image.open(io.BytesIO(await file.read()))
     
